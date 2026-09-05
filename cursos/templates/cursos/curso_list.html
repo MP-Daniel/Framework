@@ -1,0 +1,43 @@
+{% extends 'cursos/base.html' %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8">
+        <h2>Catálogo de Cursos</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'curso_create' %}" class="btn btn-primary">Registrar Nuevo Curso</a>
+    </div>
+</div>
+
+<div class="row mt-4">
+    {% for curso in cursos %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <span class="badge bg-{% if curso.estado == 'Activo' %}success{% elif curso.estado == 'Inactivo' %}danger{% else %}secondary{% endif %} float-end">{{ curso.estado }}</span>
+                    <h5 class="card-title">{{ curso.nombre }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Instructor: {{ curso.instructor }}</h6>
+                    <p class="card-text text-truncate">{{ curso.descripcion }}</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Duración:</strong> {{ curso.intensidad_horaria }} horas</li>
+                        <li><strong>Inicia:</strong> {{ curso.fecha_inicio|date:"d M Y" }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 d-flex justify-content-between pb-3">
+                    <a href="{% url 'curso_detail' curso.pk %}" class="btn btn-sm btn-outline-info">Ver Detalles</a>
+                    <div>
+                        <a href="{% url 'curso_update' curso.pk %}" class="btn btn-sm btn-outline-warning">Editar</a>
+                        <a href="{% url 'curso_delete' curso.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center mt-5">
+            <h4 class="text-muted">No hay cursos registrados en el sistema.</h4>
+            <a href="{% url 'curso_create' %}" class="btn btn-primary mt-3">Registrar el primer curso</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

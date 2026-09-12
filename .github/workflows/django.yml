@@ -48,8 +48,7 @@ jobs:
         run: python manage.py migrate
 
       - name: Comprobar Linting
-        # Agregamos --ignore=E501 para que no falle por líneas largas que genera Django por defecto
-        run: flake8 . --ignore=E501
+        run: flake8 .
 
       - name: Ejecutar Tests
         env:

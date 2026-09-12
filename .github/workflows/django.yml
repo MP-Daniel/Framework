@@ -69,4 +69,4 @@ jobs:
           context: .
           push: true
           # IMPORTANTE: Convertimos el nombre del repo a minúsculas porque Docker no soporta mayúsculas en los tags
-          tags: ghcr.io/${{ github.repository_owner }}/sistema-cursos:latest
+          tags: ghcr.io/mp-daniel/sistema-cursos:latest

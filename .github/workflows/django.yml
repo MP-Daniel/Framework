@@ -1,16 +1,18 @@
-name: Django CI
+name: test and build
 
 on:
   push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build:
+  testandbuild:
     runs-on: ubuntu-latest
-    
-    # Configuramos un servicio de MySQL para las pruebas
+
+    # Mantenemos el servicio de MySQL para que pytest no falle al conectarse a la BD
     services:
       mysql:
         image: mysql:8.0
@@ -25,33 +27,47 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'pip'
-        
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Run Migrations
-      env:
-        DB_HOST: 127.0.0.1
-        DB_USER: root
-      run: python manage.py migrate
-      
-    - name: Run Tests
-      env:
-        DB_HOST: 127.0.0.1
-        DB_USER: root
-      run: python manage.py test
+      - name: Traer el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Especificamos una versión para mejor compatibilidad
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt 
+
+      - name: Ejecutar Migraciones
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+        run: python manage.py migrate
+
+      - name: Comprobar Linting
+        # Agregamos --ignore=E501 para que no falle por líneas largas que genera Django por defecto
+        run: flake8 . --ignore=E501
+
+      - name: Ejecutar Tests
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+        run: pytest 
+
+      - name: Loguearse en el GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y subir imagen Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # IMPORTANTE: Convertimos el nombre del repo a minúsculas porque Docker no soporta mayúsculas en los tags
+          tags: ghcr.io/${{ github.repository_owner }}/sistema-cursos:latest

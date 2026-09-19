@@ -1,7 +1,12 @@
 class Calculator:
+    def __init__(self):
+        self.historial: list = []
+
     def suma(self, a: int, b: int) -> int:
-        return a + b
-        
+        resultado = a + b
+        self.historial.append(f"{a} + {b} = {resultado}")
+        return resultado
+
     def resta(self, a: int, b: int) -> int:
         return a - b
 

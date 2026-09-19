@@ -6,4 +6,3 @@ class Calculator:
         return a - b
 
 
-""" CAMBIO NEIDER GUINDIGUA """

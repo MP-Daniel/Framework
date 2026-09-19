@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "sistema_cursos"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

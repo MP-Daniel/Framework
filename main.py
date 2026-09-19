@@ -4,3 +4,5 @@ class Calculator:
         
     def resta(self, a: int, b: int) -> int:
         return a - b
+
+#prueba issue david

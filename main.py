@@ -8,27 +8,9 @@ class Calculator:
         return resultado
 
     def resta(self, a: int, b: int) -> int:
-        resultado = a - b
-        self.historial.append(f"{a} - {b} = {resultado}")
-        return resultado
+        return a - b
 
-    def multiplicacion(self, a: int, b: int) -> int:
-        resultado = a * b
-        self.historial.append(f"{a} * {b} = {resultado}")
-        return resultado
+#prueba issue david
 
-    def division(self, a: int, b: int) -> float:
-        if b == 0:
-            raise ValueError("No se puede dividir por cero")
-        resultado = a / b
-        self.historial.append(f"{a} / {b} = {resultado}")
-        return resultado
-
-    def obtener_historial(self) -> list:
-        return self.historial
-
-    def limpiar_historial(self) -> None:
-        self.historial = []
-
-
+#prueba2 con issue
 """ CAMBIO NEIDER GUINDIGUA """
